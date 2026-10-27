@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#100c19">
+<title>AFK DARKNESS — 呪われた深淵</title>
+<style>
+:root{--bg:#100c19;--panel:#1b1427;--panel2:#241a32;--line:#493452;--text:#f3eafa;--muted:#b6a5c5;--purple:#b66cff;--red:#ff526d;--gold:#ffd479;--blue:#75dcff;--green:#9cf0b0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -10%,#39234c 0,#100c19 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button{font:inherit;cursor:pointer;color:var(--text);border:1px solid #694779;background:linear-gradient(180deg,#40274f,#271a36);border-radius:10px;padding:10px 12px;box-shadow:0 3px 0 #100a17;transition:transform .08s,filter .15s}button:active{transform:translateY(2px);box-shadow:none}button:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.6)}
+.wrap{max-width:1040px;margin:auto;padding:16px 14px 32px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.brand{font-weight:900;letter-spacing:.08em;font-size:clamp(18px,4vw,28px)}.brand span{color:var(--purple)}.tag{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:5px 8px;border-radius:99px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.panel{background:linear-gradient(180deg,#21172eec,#171120f5);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 12px 35px #0005}.panel h2{font-size:15px;letter-spacing:.08em;margin:0 0 12px;color:#e8d4ff}.arena{position:relative;overflow:hidden;min-height:280px;background:radial-gradient(ellipse at 50% 65%,#512c61 0,#281a3b 32%,#171323 75%);border:1px solid #65406e;border-radius:13px;display:flex;flex-direction:column;justify-content:space-between;padding:14px;isolation:isolate}
+.arena:before{content:"";position:absolute;inset:0;background:linear-gradient(transparent 72%,#100a19 100%),repeating-linear-gradient(90deg,transparent 0 44px,#ffffff06 45px 46px);z-index:-1}
+.stage{display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:1}.stage small{color:#c5b1d4}.hero,.enemy{position:relative;width:100px;height:105px;display:grid;place-items:center;font-size:62px;filter:drop-shadow(0 0 12px #c16cff55)}.hero{animation:idle 2.3s ease-in-out infinite}.enemy{filter:drop-shadow(0 0 12px #ff365e88);animation:enemyIdle 1.5s ease-in-out infinite}.hero .glyph,.enemy .glyph{display:block}.hero:after,.enemy:after{content:"";position:absolute;width:75px;height:12px;bottom:1px;border-radius:50%;background:#05030a99;filter:blur(4px);z-index:-1}
+@keyframes idle{50%{transform:translateY(-5px)}}@keyframes enemyIdle{50%{transform:translateY(4px) scale(1.02)}}
+.health{height:10px;background:#100a16;border:1px solid #64445e;border-radius:99px;overflow:hidden;margin-top:5px}.health span{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff315a,#ff8b78);transition:width .18s}.health.heroHP span{background:linear-gradient(90deg,#6c5bff,#a78bff)}
+.unit{width:42%;min-width:0}.unit.right{text-align:right}.unit strong{font-size:13px}.unit .stats{font-size:11px;color:var(--muted);margin-top:4px}
+.fx{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}.slash{position:absolute;width:125px;height:7px;left:50%;top:49%;border-radius:100%;background:linear-gradient(90deg,transparent,#fff,#b9eaff,transparent);box-shadow:0 0 15px #8de8ff,0 0 35px #a05cff;transform:translate(-50%,-50%) rotate(-30deg);animation:slash .32s ease-out forwards}.slash.magic{height:14px;background:linear-gradient(90deg,transparent,#fff,#c28aff,#ff69d4,transparent);box-shadow:0 0 20px #c56aff,0 0 45px #f0aaff;animation:magic .6s ease-out forwards}
+@keyframes slash{0%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scale(.25)}30%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) rotate(-30deg) scale(1.5)}}
+@keyframes magic{0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(0)}25%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(2.2) rotate(75deg)}}
+.burst{position:absolute;left:72%;top:43%;font-size:28px;animation:burst .55s ease-out forwards;text-shadow:0 0 14px currentColor}@keyframes burst{0%{opacity:0;transform:scale(.2)}35%{opacity:1;transform:scale(1.35)}100%{opacity:0;transform:translateY(-30px) scale(.7)}}
+.dmg{position:absolute;left:68%;top:32%;font-size:23px;font-weight:1000;color:#fff;text-shadow:0 0 5px #ff245a,0 0 14px #ff245a;animation:float .8s ease-out forwards}.dmg.magicDmg{color:#f2c4ff;text-shadow:0 0 8px #9b3bff,0 0 20px #d26aff}
+@keyframes float{0%{opacity:0;transform:translateY(8px) scale(.7)}20%{opacity:1}100%{opacity:0;transform:translateY(-44px) scale(1.15)}}
+.arena.hit .enemy{animation:hit .22s ease-out}.arena.hero-hit .hero{animation:heroHit .25s ease-out}@keyframes hit{0%,100%{transform:translateX(0)}30%{transform:translateX(-9px) rotate(-5deg);filter:brightness(2) drop-shadow(0 0 20px #ff315a)}}@keyframes heroHit{0%,100%{transform:translateX(0)}30%{transform:translateX(8px);filter:brightness(2) drop-shadow(0 0 20px #ff315a)}}
+.arena.cast{box-shadow:inset 0 0 55px #bb55ff99}.arena.dead{filter:grayscale(.8);opacity:.8}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 8px}.meta b{font-size:18px}.meta span{color:var(--muted);font-size:12px}.bar{height:8px;background:#0d0912;border-radius:99px;overflow:hidden;margin:8px 0}.bar span{display:block;height:100%;background:linear-gradient(90deg,#8b52ff,#ef7bff);width:0%}
+.statsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{padding:10px;background:#130e1c;border:1px solid #3d2b4b;border-radius:10px}.stat small{display:block;color:var(--muted);font-size:11px}.stat b{font-size:17px}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.actions button{font-size:13px}.primary{background:linear-gradient(180deg,#8b45ba,#57267c);border-color:#b77de0}.gold{color:var(--gold)}.log{height:90px;overflow:auto;font-size:12px;line-height:1.6;color:#c8b8d5;background:#100b17;border-radius:9px;padding:8px;margin-top:10px}.log p{margin:0}.tabs{display:flex;gap:6px;margin-bottom:10px}.tabs button{flex:1;padding:9px 4px;font-size:12px}.tabs button.active{background:linear-gradient(180deg,#70409a,#44255d);border-color:#c18af0}
+.upgrade{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #3c2b49}.upgrade:last-child{border:0}.upgrade strong{font-size:13px}.upgrade small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.upgrade button{font-size:12px;white-space:nowrap;padding:8px}
+.skillgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.skill{border:1px solid #4a365b;background:#160f21;border-radius:11px;padding:11px;text-align:left;min-height:94px}.skill b{display:block;font-size:13px}.skill small{display:block;color:var(--muted);font-size:11px;margin:5px 0}.skill em{font-size:11px;color:var(--gold);font-style:normal}.skill.unlocked{border-color:#b56bff;background:#2c1740;box-shadow:inset 0 0 18px #a64cff22}
+.notice{font-size:12px;color:var(--muted);line-height:1.55}.footer{font-size:11px;color:#7f6d8e;text-align:center;margin-top:14px}
+.modal{position:fixed;inset:0;background:#08050ddd;display:none;place-items:center;padding:20px;z-index:10}.modal.show{display:grid}.modalbox{max-width:380px;width:100%;background:#21152d;border:1px solid #a64ed0;border-radius:18px;padding:24px;text-align:center;box-shadow:0 0 80px #852dba66}.modalbox .skull{font-size:54px}.modalbox h2{margin:4px 0 8px}.modalbox p{color:var(--muted);font-size:13px;line-height:1.6}.modalbox button{width:100%;margin-top:8px}
+@media(max-width:700px){.wrap{padding:12px 10px 25px}.grid{grid-template-columns:1fr}.arena{min-height:255px}.panel{padding:12px}.statsGrid{gap:6px}.stat{padding:8px}.stat b{font-size:15px}.hero,.enemy{font-size:56px}.top{align-items:flex-start}.tag{font-size:10px}.log{height:72px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><div><div class="brand">AFK <span>DARKNESS</span></div><div class="tag" style="display:inline-block;margin-top:5px">呪われた深淵 · PROTOTYPE 0.1</div></div><button id="saveBtn" title="セーブ">💾 セーブ</button></header>
+  <div class="grid">
+    <main class="panel">
+      <h2>⚔ 深淵の戦場</h2>
+      <div class="arena" id="arena">
+        <div class="stage">
+          <div class="unit"><strong>🩸 亡者の騎士</strong><div class="health heroHP"><span id="heroBar"></span></div><div class="stats" id="heroHpText">HP 100 / 100</div></div>
+          <div class="unit right"><strong id="enemyName">深淵の餓鬼</strong><div class="health"><span id="enemyBar"></span></div><div class="stats" id="enemyHpText">HP 35 / 35</div></div>
+        </div>
+        <div class="stage">
+          <div class="hero" id="hero"><span class="glyph">🛡️</span></div>
+          <div class="enemy" id="enemy"><span class="glyph">👹</span></div>
+        </div>
+        <div class="fx" id="fx"></div>
+        <div class="meta"><div><span>到達階層</span><br><b id="floor">第 1 層</b></div><div style="text-align:right"><span>討伐数</span><br><b id="kills">0</b></div></div>
+      </div>
+      <div class="statsGrid">
+        <div class="stat"><small>🪙 ゴールド</small><b id="gold">0</b></div>
+        <div class="stat"><small>🔮 残響</small><b id="echo">0</b></div>
+        <div class="stat"><small>✨ レベル</small><b id="level">1</b></div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="upgradeAtk">⚔ 攻撃力強化</button>
+        <button id="upgradeHp">🩸 最大HP強化</button>
+        <button class="primary" id="upgradeMagic">✨ 魔力強化</button>
+        <button id="rebirthBtn">☠ 死に戻り（転生）</button>
+      </div>
+      <div class="log" id="log" aria-live="polite"><p>深淵の扉が開いた。英雄は自動で戦い始める……</p></div>
+    </main>
+    <aside class="panel">
+      <div class="tabs"><button class="active" data-tab="status">能力</button><button data-tab="skills">スキルツリー</button><button data-tab="limit">限界突破</button></div>
+      <section id="tab-status">
+        <h2>🕯 英雄の状態</h2>
+        <div class="upgrade"><div><strong>攻撃力</strong><small>通常攻撃ダメージ</small></div><b id="atk">5</b></div>
+        <div class="upgrade"><div><strong>魔力</strong><small>魔法発動時の追加ダメージ</small></div><b id="magic">8</b></div>
+        <div class="upgrade"><div><strong>最大HP</strong><small>倒されるまでの耐久力</small></div><b id="maxHp">100</b></div>
+        <div class="upgrade"><div><strong>攻撃速度</strong><small>自動攻撃の間隔</small></div><b>1.2秒</b></div>
+        <div class="upgrade"><div><strong>転生回数</strong><small>魂に刻まれた死</small></div><b id="rebirths">0</b></div>
+        <p class="notice">魔法は一定確率で自動発動。紫の魔力が敵を貫く。深い階層ほど敵は強くなる。</p>
+      </section>
+      <section id="tab-skills" hidden>
+        <h2>🌑 魂のスキルツリー</h2>
+        <p class="notice">死亡で得た残響を使って永続スキルを解放。効果は転生後も残る。</p>
+        <div class="skillgrid" id="skillGrid"></div>
+      </section>
+      <section id="tab-limit" hidden>
+        <h2>🔺 限界突破の祭壇</h2>
+        <p class="notice">転生を重ねると解放。残響を使い、魂の器そのものを強化する。</p>
+        <div class="upgrade"><div><strong>魂の器</strong><small>恒久ダメージ倍率：+20% / 段階</small><b id="limitLevel">未解放</b></div><button id="limitBtn">強化</button></div>
+        <div class="upgrade"><div><strong>限界突破コスト</strong><small>必要な残響</small></div><b id="limitCost">10</b></div>
+        <p class="notice">転生1回で祭壇が解放される。限界突破はリセットされない。</p>
+      </section>
+    </aside>
+  </div>
+  <div class="footer">セーブはこのブラウザ内に保存されます。ブラウザのデータ削除で失われる場合があります。</div>
+</div>
+<div class="modal" id="deathModal"><div class="modalbox"><div class="skull">☠️</div><h2>魂は深淵に還った</h2><p id="deathText">死は終わりではない。残響を集め、より強くなって戻れ。</p><button class="primary" id="returnBtn">拠点へ帰還する</button></div></div>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const defaultState = () => ({gold:0,echo:0,level:1,xp:0,kills:0,floor:1,atk:5,magic:8,maxHp:100,hp:100,atkCost:15,hpCost:18,magicCost:20,rebirths:0,limit:0,skills:{power:0,sorcery:0,fortune:0,vitality:0},lastSeen:Date.now(),totalEcho:0});
+let s = defaultState(), enemy = {}, lastAttack=0, enemyAttack=0, lastSave=Date.now(), dead=false;
+const skillInfo = {
+ power:{name:"魂喰らい",desc:"通常攻撃 +20% / 段階",cost:3,max:5},
+ sorcery:{name:"虚無の魔術",desc:"魔法発動率 +5% / 段階",cost:4,max:5},
+ fortune:{name:"強欲の呪い",desc:"獲得ゴールド +15% / 段階",cost:3,max:5},
+ vitality:{name:"不死の残滓",desc:"最大HP +15% / 段階",cost:4,max:5}
+};
+function load(){
+ try{const raw=localStorage.getItem("afkDarknessSave");if(raw){const parsed=JSON.parse(raw);s={...defaultState(),...parsed,skills:{...defaultState().skills,...(parsed.skills||{})}};}}
+ catch(e){console.warn("Save load failed",e)}
+ const away=Math.max(0,Math.min(8*60*60,Math.floor((Date.now()-(s.lastSeen||Date.now()))/1000)));
+ if(away>15 && s.floor>1){const reward=Math.floor(away/10*Math.max(1,s.floor*.25));s.gold+=reward;log(`不在の間に残党を討伐。放置報酬 +${fmt(reward)} G（${Math.floor(away/60)}分）`);}
+ s.lastSeen=Date.now(); s.hp=Math.min(s.maxHp,Math.max(1,s.hp)); save(false);
+}
+function save(show=true){s.lastSeen=Date.now();try{localStorage.setItem("afkDarknessSave",JSON.stringify(s));if(show)log("進行状況をセーブした。");}catch(e){if(show)log("セーブできませんでした。ブラウザの設定を確認してね。");}}
+function fmt(n){return Math.floor(n).toLocaleString("ja-JP")}
+function cost(base,level){return Math.floor(base*Math.pow(1.38,Math.max(0,level-1)))}
+function stats(){
+ const power=1+s.skills.power*.2+s.limit*.2;
+ const hpMult=1+s.skills.vitality*.15;
+ return {atk:Math.floor(s.atk*power),magic:Math.floor(s.magic*(1+s.skills.sorcery*.1+s.limit*.1)),maxHp:Math.floor(s.maxHp*hpMult),gold:1+s.skills.fortune*.15};
+}
+function makeEnemy(){
+ const hp=Math.floor(22*Math.pow(1.24,s.floor-1)+s.floor*7);
+ const names=["深淵の餓鬼","腐敗した兵士","血喰らいの獣","呪われた司祭","奈落の騎士","虚無の番人","堕ちた竜裔"];
+ const glyphs=["👹","💀","🐺","🧙","🗡️","👁️","🐉"];
+ const i=Math.min(names.length-1,Math.floor((s.floor-1)/3));
+ enemy={name:names[i],glyph:glyphs[i],maxHp:hp,hp:hp,atk:Math.floor(3*Math.pow(1.18,s.floor-1)+s.floor),reward:Math.floor((5+s.floor*2)*Math.pow(1.12,s.floor-1))};
+ $("enemyName").textContent=enemy.name;$("enemy .glyph").textContent=enemy.glyph;
+}
+function log(msg){const el=$("log");const p=document.createElement("p");p.textContent="› "+msg;el.prepend(p);while(el.children.length>20)el.lastChild.remove();}
+function effect(type,damage){
+ const fx=$("fx"),arena=$("arena");fx.innerHTML="";
+ const sl=document.createElement("div");sl.className="slash"+(type==="magic"?" magic":"");fx.appendChild(sl);
+ const burst=document.createElement("div");burst.className="burst";burst.style.color=type==="magic"?"#d99bff":"#9cecff";burst.textContent=type==="magic"?"✦ ✧ ✦":"✧";fx.appendChild(burst);
+ const dmg=document.createElement("div");dmg.className="dmg"+(type==="magic"?" magicDmg":"");dmg.textContent="-"+fmt(damage);fx.appendChild(dmg);
+ arena.classList.remove("hit","cast");void arena.offsetWidth;arena.classList.add("hit");if(type==="magic")arena.classList.add("cast");
+ setTimeout(()=>arena.classList.remove("hit","cast"),300);setTimeout(()=>fx.innerHTML="",850);
+}
+function heroEffect(){const arena=$("arena");arena.classList.remove("hero-hit");void arena.offsetWidth;arena.classList.add("hero-hit");setTimeout(()=>arena.classList.remove("hero-hit"),300)}
+function attack(){
+ if(dead)return;
+ const st=stats(), magicChance=.18+s.skills.sorcery*.05;
+ const isMagic=Math.random()<magicChance;
+ let damage=isMagic?Math.floor(st.atk*.65+st.magic*(1+s.limit*.1)):st.atk;
+ if(isMagic)damage=Math.floor(damage*(1+s.skills.sorcery*.08));
+ enemy.hp-=damage;effect(isMagic?"magic":"slash",damage);
+ if(isMagic)log(`虚無魔法が炸裂！ ${fmt(damage)} ダメージ！`);
+ if(enemy.hp<=0){killEnemy();return}
+ render();
+}
+function killEnemy(){
+ const st=stats();const reward=Math.floor(enemy.reward*st.gold);
+ s.gold+=reward;s.kills++;s.xp+=10+s.floor*2;
+ log(`${enemy.name}を討伐！ +${fmt(reward)} G`);
+ if(s.xp>=s.level*30){s.xp-=s.level*30;s.level++;s.atk+=2;s.maxHp+=10;s.hp=Math.min(s.maxHp,s.hp+20);log(`レベルアップ！ Lv.${s.level} になった。`);}
+ s.floor++;makeEnemy();render();
+}
+function takeDamage(){
+ if(dead)return;
+ const st=stats();s.hp-=enemy.atk;
+ heroEffect();log(`反撃を受けた。-${fmt(enemy.atk)} HP`);
+ if(s.hp<=0){s.hp=0;die();}render();
+}
+function die(){
+ dead=true;
+ const earned=Math.max(1,Math.floor((s.floor-1)*.8+s.kills*.12));
+ s.echo+=earned;s.totalEcho+=earned;
+ $("deathText").textContent=`第${s.floor}層で力尽きた。残響を ${earned} 個獲得。死を糧に強化し、再び深淵へ挑め。`;
+ $("deathModal").classList.add("show");log(`死亡……残響 +${earned}`);save(false);
+}
+function returnToBase(){
+ $("deathModal").classList.remove("show");dead=false;
+ s.floor=1;s.kills=0;s.xp=0;s.hp=stats().maxHp;
+ // keep current hero permanent stats; enemy progression resets
+ makeEnemy();render();log("拠点へ帰還。魂に刻まれた力は失われない。");save(false);
+}
+function rebirth(){
+ if(dead)return;
+ if(s.floor<5 && s.rebirths===0){log("転生には第5層到達が必要。まずは深淵を進もう。");return}
+ if(s.floor<5){log("転生には第5層到達が必要。");return}
+ const earned=Math.max(2,Math.floor((s.floor-1)*1.25+s.kills*.15));
+ s.echo+=earned;s.totalEcho+=earned;s.rebirths++;
+ s.floor=1;s.kills=0;s.level=1;s.xp=0;s.gold=Math.floor(s.gold*.15);
+ s.atk=5+s.rebirths*2;s.magic=8+s.rebirths*2;s.maxHp=100+s.rebirths*15;s.hp=s.maxHp;
+ makeEnemy();render();log(`死に戻り成功。残響 +${earned}。魂が少し強くなった。`);save(false);
+}
+function buy(kind){
+ if(dead)return;
+ if(kind==="atk"&&s.gold>=s.atkCost){s.gold-=s.atkCost;s.atk+=2;s.atkCost=Math.floor(s.atkCost*1.45);log("攻撃力を強化した。");}
+ else if(kind==="hp"&&s.gold>=s.hpCost){s.gold-=s.hpCost;s.maxHp+=20;s.hp=Math.min(s.maxHp,s.hp+20);s.hpCost=Math.floor(s.hpCost*1.45);log("最大HPを強化した。");}
+ else if(kind==="magic"&&s.gold>=s.magicCost){s.gold-=s.magicCost;s.magic+=3;s.magicCost=Math.floor(s.magicCost*1.5);log("魔力を強化した。");}
+ else {log("ゴールドが足りない。敵を倒して集めよう。");return}
+ render();save(false);
+}
+function buySkill(key){
+ const info=skillInfo[key],lvl=s.skills[key];if(lvl>=info.max){log("このスキルは最大レベル。");return}
+ const cost=info.cost*(lvl+1);if(s.echo<cost){log("残響が足りない。死に戻りで集めよう。");return}
+ s.echo-=cost;s.skills[key]++;log(`${info.name}を強化。Lv.${s.skills[key]}`);render();save(false);
+}
+function limitBreak(){
+ if(s.rebirths<1){log("限界突破は転生後に解放される。");return}
+ const cost=10+s.limit*8;if(s.echo<cost){log(`残響が足りない。必要：${cost}`);return}
+ s.echo-=cost;s.limit++;log(`魂の器が限界突破！ 段階 ${s.limit}`);render();save(false);
+}
+function render(){
+ const st=stats();
+ $("gold").textContent=fmt(s.gold);$("echo").textContent=fmt(s.echo);$("level").textContent=s.level;
+ $("floor").textContent=`第 ${s.floor} 層`;$("kills").textContent=fmt(s.kills);
+ $("atk").textContent=fmt(st.atk);$("magic").textContent=fmt(st.magic);$("maxHp").textContent=fmt(st.maxHp);
+ $("rebirths").textContent=s.rebirths;$("limitLevel").textContent=s.rebirths?`段階 ${s.limit}`:"未解放";
+ $("limitCost").textContent=fmt(10+s.limit*8);
+ $("heroBar").style.width=Math.max(0,s.hp/st.maxHp*100)+"%";$("heroHpText").textContent=`HP ${fmt(s.hp)} / ${fmt(st.maxHp)}`;
+ $("enemyBar").style.width=Math.max(0,enemy.hp/enemy.maxHp*100)+"%";$("enemyHpText").textContent=`HP ${fmt(Math.max(0,enemy.hp))} / ${fmt(enemy.maxHp)}`;
+ $("upgradeAtk").textContent=`⚔ 攻撃力強化 · ${fmt(s.atkCost)} G`;
+ $("upgradeHp").textContent=`🩸 最大HP強化 · ${fmt(s.hpCost)} G`;
+ $("upgradeMagic").textContent=`✨ 魔力強化 · ${fmt(s.magicCost)} G`;
+ $("rebirthBtn").textContent=s.floor>=5?`☠ 死に戻り · 残響獲得`:"☠ 死に戻り（第5層〜）";
+ $("limitBtn").disabled=s.rebirths<1||s.echo<10+s.limit*8;
+ $("skillGrid").innerHTML="";
+ for(const [key,info] of Object.entries(skillInfo)){
+   const lvl=s.skills[key],cost=info.cost*(lvl+1),el=document.createElement("button");
+   el.className="skill"+(lvl?" unlocked":"");el.innerHTML=`<b>${info.name}</b><small>${info.desc}</small><em>Lv.${lvl}/${info.max} · 残響 ${cost}</em>`;
+   el.disabled=lvl>=info.max||s.echo<cost;el.addEventListener("click",()=>buySkill(key));$("skillGrid").appendChild(el);
+ }
+ $("upgradeAtk").disabled=s.gold<s.atkCost;$("upgradeHp").disabled=s.gold<s.hpCost;$("upgradeMagic").disabled=s.gold<s.magicCost;
+}
+document.querySelectorAll("[data-tab]").forEach(btn=>btn.addEventListener("click",()=>{
+ document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b===btn));
+ ["status","skills","limit"].forEach(t=>{$("tab-"+t).hidden=t!==btn.dataset.tab});
+}));
+$("upgradeAtk").addEventListener("click",()=>buy("atk"));$("upgradeHp").addEventListener("click",()=>buy("hp"));$("upgradeMagic").addEventListener("click",()=>buy("magic"));
+$("rebirthBtn").addEventListener("click",rebirth);$("limitBtn").addEventListener("click",limitBreak);$("returnBtn").addEventListener("click",returnToBase);$("saveBtn").addEventListener("click",()=>save(true));
+window.addEventListener("beforeunload",()=>save(false));
+load();makeEnemy();render();
+let lastTick=Date.now();
+setInterval(()=>{
+ const now=Date.now(),delta=Math.min(2,(now-lastTick)/1000);lastTick=now;if(dead)return;
+ // Hero attacks roughly every 1.2 sec; enemy retaliates every 1.8 sec.
+ if(now-lastAttack>=1200){lastAttack=now;attack();}
+ if(now-enemyAttack>=1800){enemyAttack=now;if(!dead)takeDamage();}
+ if(now-lastSave>=5000){lastSave=now;save(false);}
+},150);
+})();
+</script>
+</body>
+</html>
